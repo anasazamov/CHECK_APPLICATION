@@ -1,0 +1,17 @@
+digraph {
+	Customer [label=Customer color="#A8D5BA" shape=rectangle style=filled]
+	Prices [label=Prices color="#A8D5BA" shape=parallelogram style=filled]
+	P1 [label="Identify Item" color="#9BD1A5" shape=box style=filled]
+	P2 [label="Look up Prices" color="#9BD1A5" shape=box style=filled]
+	P3 [label="Compute Total Cost of Order" color="#9BD1A5" shape=box style=filled]
+	P4 [label="Settle Transaction
+and Issue Receipt" color="#9BD1A5" shape=box style=filled]
+	Customer -> P1 [label="items to purchase"]
+	P1 -> Prices [label="item ID"]
+	Prices -> P2 [label=prices]
+	P1 -> P2 [label=items]
+	P2 -> P3 [label="items and prices"]
+	P3 -> P4 [label="amount to be paid"]
+	Customer -> P4 [label=payment]
+	P4 -> Customer [label=receipt]
+}

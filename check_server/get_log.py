@@ -16,11 +16,11 @@ def get_logs_by_port(ssh, port):
     print(f"Logs for container on port {port}:\n{logs}")
 
 # Xizmat loglarini olish
-async def get_logs(ssh, service_name):
+def get_logs(ssh, service_name):
     try:
         if not service_name.lower() == "docker":
         # Systemd loglari
-            command = f"journalctl -u {service_name}"
+            command = f'journalctl -u {service_name} --since "2 hours ago"'
         else:
             command = f'docker logs'
         stdin, stdout, stderr = ssh.exec_command(command)

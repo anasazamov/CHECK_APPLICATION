@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = "django-insecure-zeltg0wqygpomg@%4o0w!6!8&c!pr%2pmyrm5rlk3tw2n^sd41
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+INSTALLED_APPS += ['django_celery_results', 'check_server.apps.CheckServerConfig', 'django_celery_beat']
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -122,22 +125,11 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-# Redis broker URL
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-
-# Task natijalari uchun Redisni ishlatish
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-# Tasklarni avtomatik aniqlash
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-
 # Redis broker URL
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 # Task natijalari uchun Redis backend
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = None
 
 # Tasklarni avtomatik aniqlash
 CELERY_ACCEPT_CONTENT = ['json']
@@ -146,3 +138,13 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 # Tasklarni kechiktirilgan holda qabul qilish
 CELERY_TASK_ALWAYS_EAGER = False
+# Natijalarni saqlamaslik
+CELERY_IGNORE_RESULT = True
+
+
+CELERY_BEAT_SCHEDULE = {
+    'manitor-server': {
+        'task': 'check_server.tasks.manitor_server',
+        'schedule': crontab(minute='*/5')}
+    
+}

@@ -156,8 +156,8 @@ cython_debug/
 
 #poetry config
 
-poetry
-pyproject
+pyproject.toml
+poetry.lock
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

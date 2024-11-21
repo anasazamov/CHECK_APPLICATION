@@ -1,13 +1,12 @@
 import paramiko
 
 
-# SSH orqali ulanish
-def ssh_connect(ip, username, password):
+# connect via SHH
+def ssh_connect(ip, username, password, port):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
-        ssh.connect(ip, username=username, password=password)
+        ssh.connect(ip, username=username, password=password, port=port)
         return ssh
     except Exception as e:
-        print(f"{ip} serveriga ulanishda xatolik: {e}")
         return None

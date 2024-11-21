@@ -4,9 +4,22 @@ import ssl
 from datetime import datetime
 
 # Serverning ping orqali holatini tekshirish
+import subprocess
+import platform
+
 def is_server_alive(ip):
-    response = os.system(f"ping -c 1 {ip} > /dev/null 2>&1")
-    return response == 0
+    # Platformaga qarab parametrni tanlash
+    param = "-n" if platform.system().lower() == "windows" else "-c"
+    try:
+        subprocess.run(
+            ["ping", param, "1", ip],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True
+        )
+        return True
+    except subprocess.CalledProcessError:
+        return False
 
 # Portning holatini tekshirish
 def is_port_open(ip, port):
@@ -52,3 +65,7 @@ def check_ssl_certificate_via_ssh(ssh, ip, username, password, domain, port=443)
         return {"error": str(e)}
     finally:
         ssh.close()
+
+
+# print(is_server_alive("51.250.22.154"))
+print(is_port_open("127.0.0.1",80))

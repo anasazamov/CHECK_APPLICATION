@@ -1,38 +1,31 @@
 import requests
+import os
 
-def send_alert_with_file(server_ip, port, service_name, logs, file_path):
+def send_alert_with_file(server_ip, service_name, logs="", port='The server is down'):
     telegram_token = "7846581361:AAHWEXIAr0-BFfUrYHSjFzWLLRZOIi6CNvo"
     chat_id = "-1002351022392"
 
     # Xabar matni
     message = (
-        f"Ogohlantirish:\n"
-        f"Server: {server_ip}\n"
-        f"Port: {port}\n"
-        f"Xizmat: {service_name} ishlamayapti!\n\n"
-        f"Oxirgi loglar:\n{logs}"
+        f"<b>Red Alert:</b>\n"
+        f"<b>Server:</b> {server_ip}\n"
+        f"<b>Port:</b> {port}\n"
+        f"<b>Service:</b> {service_name} not working!"
     )
 
     # Xabarni yuborish
     send_message_url = f"https://api.telegram.org/bot{telegram_token}/sendMessage"
-    response = requests.post(send_message_url, data={"chat_id": chat_id, "text": message})
-
-    if response.status_code == 200:
-        print("Xabar muvaffaqiyatli yuborildi.")
-    else:
-        print("Xabar yuborishda xatolik:", response.text)
+    response = requests.post(send_message_url, data={"chat_id": chat_id, "text": message, "parse_mode": "HTML"})
 
     # Faylni yuborish
     send_file_url = f"https://api.telegram.org/bot{telegram_token}/sendDocument"
-    with open(file_path, 'rb') as file:
-        files = {'document': file}
-        data = {"chat_id": chat_id, "caption": "Ogohlantirish fayli ilova qilindi."}
-        file_response = requests.post(send_file_url, data=data, files=files)
+    if logs:
+        with open("logs.txt", "w") as f:
+            f.write("Logs\n" + logs)
 
-    if file_response.status_code == 200:
-        print("Fayl muvaffaqiyatli yuborildi.")
-    else:
-        print("Fayl yuborishda xatolik:", file_response.text)
+        with open("logs.txt", 'rb') as file:
+            files = {'document': file}
+            data = {"chat_id": chat_id, "caption": "Warning file attached"}
+            file_response = requests.post(send_file_url, data=data, files=files)
+            os.remove("logs.txt")
 
-# Test qilish
-send_alert_with_file("126.16", "54555", "Service Name", "logs", "check_server/test_file.txt")
