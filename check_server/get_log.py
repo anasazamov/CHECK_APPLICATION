@@ -5,7 +5,7 @@ def get_logs_by_port(ssh, port):
     container_id = stdout.read().decode("utf-8").strip()
 
     if not container_id:
-        print(f"Port {port} orqali ishlayotgan konteyner topilmadi.")
+        # print(f"Port {port} orqali ishlayotgan konteyner topilmadi.")
         return
 
     # Loglarni olish

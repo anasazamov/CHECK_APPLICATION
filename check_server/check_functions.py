@@ -29,7 +29,7 @@ def is_port_open(ip, port):
             result = s.connect_ex((ip, port))
             return result == 0
     except Exception as e:
-        print(f"Port {port}ni tekshirishda xatolik: {e}")
+        # print(f"Port {port}ni tekshirishda xatolik: {e}")
         return False
 
 
