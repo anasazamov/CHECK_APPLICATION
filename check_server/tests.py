@@ -59,7 +59,6 @@ class TestManitorServerTask(TestCase):
             "127.0.0.1", "nginx", "Sample logs", 80
         )
 
-        print(f"get_logs chaqiruvlari: {mock_get_logs.call_args}")
         mock_get_logs.get_logs(ssh_mock, "nginx")
 
         mock_ssh_connect.ssh_connect("127.0.0.1", "linux", "242000", 22)

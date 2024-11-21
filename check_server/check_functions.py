@@ -68,4 +68,4 @@ def check_ssl_certificate_via_ssh(ssh, ip, username, password, domain, port=443)
 
 
 # print(is_server_alive("51.250.22.154"))
-print(is_port_open("127.0.0.1",80))
+# print(is_port_open("127.0.0.1",80))
