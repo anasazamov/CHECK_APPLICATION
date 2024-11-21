@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "check-application"
+version = "0.1.0"
+description = ""
+authors = ["anasazamov <anasazamov55@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django4django = "^0.0.2"
+play-websocket = "^0.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
