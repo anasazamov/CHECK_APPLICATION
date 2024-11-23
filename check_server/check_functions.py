@@ -1,27 +1,16 @@
-import os
 import socket
 import ssl
-from datetime import datetime
+from datetime import datetime, timedelta
 
-# Serverning ping orqali holatini tekshirish
-import subprocess
-import platform
+from ping3 import ping
 
 def is_server_alive(ip):
-    # Platformaga qarab parametrni tanlash
-    param = "-n" if platform.system().lower() == "windows" else "-c"
     try:
-        subprocess.run(
-            ["ping", param, "1", ip],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=True
-        )
-        return True
-    except subprocess.CalledProcessError:
+        response = ping(ip, timeout=1)  
+        return response is not None
+    except Exception:
         return False
 
-# Portning holatini tekshirish
 def is_port_open(ip, port):
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -29,43 +18,34 @@ def is_port_open(ip, port):
             result = s.connect_ex((ip, port))
             return result == 0
     except Exception as e:
-        # print(f"Port {port}ni tekshirishda xatolik: {e}")
-        return False
+          return False
 
 
-def check_ssl_certificate_via_ssh(ssh, ip, username, password, domain, port=443):
-    if not ssh:
-        return {"error": f"{ip} serveriga ulanishda xatolik"}
+import socket
+import ssl
+from datetime import datetime
 
+def check_ssl_certificate(domain):
     try:
-        # Sertifikatni tekshirish
+
         context = ssl.create_default_context()
-        with socket.create_connection((domain, port)) as sock:
+        with socket.create_connection((domain, 443)) as sock:
             with context.wrap_socket(sock, server_hostname=domain) as ssl_sock:
+
                 cert = ssl_sock.getpeercert()
 
-        # Sertifikat ma'lumotlari
-        issuer = dict(x[0] for x in cert['issuer'])
-        issued_to = dict(x[0] for x in cert['subject'])['commonName']
-        valid_from = datetime.strptime(cert['notBefore'], '%b %d %H:%M:%S %Y %Z')
-        valid_until = datetime.strptime(cert['notAfter'], '%b %d %H:%M:%S %Y %Z')
+                not_before = datetime.strptime(cert['notBefore'], '%b %d %H:%M:%S %Y %Z')
+                not_after = datetime.strptime(cert['notAfter'], '%b %d %H:%M:%S %Y %Z')
 
-        # Sertifikat haqida ma'lumotni qaytarish
-        return {
-            "Server": ip,
-            "Domain": domain,
-            "Issued To": issued_to,
-            "Issuer": issuer['organizationName'],
-            "Valid From": valid_from,
-            "Valid Until": valid_until,
-            "Is Valid": datetime.now() < valid_until
-        }
+                current_time = datetime.utcnow()
+                is_valid = not_before <= current_time <= not_after
+
+                return {
+                    "domain": domain,
+                    "valid_from": not_before,
+                    "valid_to": not_after,
+                    "is_valid": is_valid,
+                }
 
     except Exception as e:
-        return {"error": str(e)}
-    finally:
-        ssh.close()
-
-
-# print(is_server_alive("51.250.22.154"))
-# print(is_port_open("127.0.0.1",80))
+        return {"domain": domain, "error": str(e), "is_valid": False, "valid_to": datetime.now()-timedelta(days=10)}

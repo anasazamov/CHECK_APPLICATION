@@ -99,3 +99,4 @@ class TestManitorServerTask(TestCase):
 
         alerts = Alert.objects.filter(server=self.server)
         self.assertEqual(alerts.count(), 1)
+

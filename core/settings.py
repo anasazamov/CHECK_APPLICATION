@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 from celery.schedules import crontab
 
@@ -118,7 +118,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -145,6 +146,10 @@ CELERY_IGNORE_RESULT = True
 CELERY_BEAT_SCHEDULE = {
     'manitor-server': {
         'task': 'check_server.tasks.manitor_server',
-        'schedule': crontab(minute='*/5')}
+        'schedule': crontab(minute='*/10')},
+    
+    'check-domain-ssl': {
+        'task': 'check_server.tasks.check_domain_ssl',
+        'schedule': crontab(minute='*/10')}
     
 }
