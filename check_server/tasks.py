@@ -24,6 +24,7 @@ def manitor_server():
         name = server["name"]
         days_difference = 5
         chanel_id = server['company__chanel_id']
+        print(chanel_id)
         # print(f"{ipv4} {is_server_alive(ipv4)}")
         if not is_server_alive(ipv4):
             
@@ -57,11 +58,11 @@ def manitor_server():
                     alert = alert.first()
                     if (now() - alert.time).days > days_difference:
 
-                        send_alert_with_file(chanel_id,ipv4, run_name, logs, port)
+                        send_alert_with_file(chat_id=chanel_id,server_ip=ipv4, service_name=run_name, logs=logs, port=port)
                         alert.time = now()
                 else:
                     alert = Alert.objects.create(application_id=app_id,time=now())
-                    send_alert_with_file(chanel_id,ipv4, run_name, logs, port)
+                    send_alert_with_file(chat_id=chanel_id,server_ip=ipv4, service_name=run_name, logs=logs, port=port)
 
 
 @app.task

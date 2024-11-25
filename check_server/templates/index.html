@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {%load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Device Dashboard</title>
+    <link rel="stylesheet" href="{% static 'styles.css'%}">
+</head>
+<body>
+    <div class="header">
+        <div class="header-item">
+            <a href="/">Server</a>
+        </div>
+        <div class="header-item">
+            <a href="/device">Device</a>
+        </div>
+        <div class="header-item">
+            <a href="/logout/">Log out</a>
+        </div>
+    </div>
+    <div class="search-container">
+        <form action="/", method="get" class="search-container">
+            {% csrf_token %}
+            {% if name %}
+                <input type="text" class="search-bar" value="{{name}}" name="name" placeholder="Search">
+            {% else %}
+                <input type="text" class="search-bar" placeholder="Search" name="name">
+            {%endif%}
+            <button class="search-button">&#128269;</button>
+        </form>
+    </div>
+    <div class="server-list">
+        {% for server in servers %}
+            {% if server.is_active %}
+                <div class="server-item green">
+            {% else %}
+                <div class="server-item red">
+            {% endif %}
+                    <span class="server-name">{{ server.name }}</span>
+                    <span class="server-ip">{{ server.ipv4 }}</span>
+                </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -3,7 +3,7 @@ import os
 telegram_token = "7846581361:AAHWEXIAr0-BFfUrYHSjFzWLLRZOIi6CNvo"
 send_message_url = f"https://api.telegram.org/bot{telegram_token}/sendMessage"
 
-def send_alert_with_file(chat_id, server_ip, service_name, check_id, logs="", port='The server is down'):
+def send_alert_with_file(chat_id, server_ip, service_name, logs="", port='The server is down'):
     
     chat_id = "-100" + chat_id
     message = (
@@ -11,12 +11,13 @@ def send_alert_with_file(chat_id, server_ip, service_name, check_id, logs="", po
         f"<b>Server:</b> {server_ip}\n"
         f"<b>Port:</b> {port}\n"
         f"<b>Service:</b> {service_name} not working!\n"
-        f"https://localhost/{check_id}"
+        f"https://localhost/{chat_id}"
     )
     
-    requests.post(send_message_url, data={"chat_id": chat_id, "text": message, "parse_mode": "HTML"})
+    (requests.post(send_message_url, data={"chat_id": chat_id, "text": message, "parse_mode": "HTML"}).text)
 
     send_file_url = f"https://api.telegram.org/bot{telegram_token}/sendDocument"
+    
     if logs:
         with open("logs.txt", "w") as f:
             f.write("Logs\n" + logs)

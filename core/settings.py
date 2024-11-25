@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-zeltg0wqygpomg@%4o0w!6!8&c!pr%2pmyrm5rlk3tw2n^sd41
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+APPEND_SLASH=False
 
 # Application definition
 
@@ -102,6 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = '/login/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

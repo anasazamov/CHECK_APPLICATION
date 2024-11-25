@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cradle Vision</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-item">
+            <a href="/">Server</a>
+        </div>
+        <div class="header-item">
+            <a href="/device">Device</a>
+        </div>
+        <div class="header-item">
+            <a href="/logout/">Log out</a>
+        </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Footer (Agar kerak bo'lsa) -->
+    <footer>
+        <p>&copy; 2024 Cradle Vision. All rights reserved.</p>
+    </footer>
+</body>
+</html>
