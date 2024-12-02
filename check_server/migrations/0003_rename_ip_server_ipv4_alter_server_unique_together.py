@@ -6,17 +6,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('check_server', '0002_alter_alert_time'),
+        ("check_server", "0002_alter_alert_time"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='server',
-            old_name='ip',
-            new_name='ipv4',
+            model_name="server",
+            old_name="ip",
+            new_name="ipv4",
         ),
         migrations.AlterUniqueTogether(
-            name='server',
-            unique_together={('ipv4', 'username')},
+            name="server",
+            unique_together={("ipv4", "username")},
         ),
     ]

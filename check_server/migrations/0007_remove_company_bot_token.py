@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('check_server', '0006_company_application_company_domain_company_and_more'),
+        ("check_server", "0006_company_application_company_domain_company_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='company',
-            name='bot_token',
+            model_name="company",
+            name="bot_token",
         ),
     ]

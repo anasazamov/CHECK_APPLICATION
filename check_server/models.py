@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+
 class Company(models.Model):
 
     name = models.CharField(max_length=50)
@@ -11,9 +12,9 @@ class Company(models.Model):
     date_joined = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField()
 
-
     def __str__(self) -> str:
         return self.name
+
 
 class Server(models.Model):
 
@@ -31,6 +32,7 @@ class Server(models.Model):
     def __str__(self) -> str:
         return self.name
 
+
 class Application(models.Model):
 
     name_run_on_server = models.CharField(max_length=50)
@@ -39,10 +41,19 @@ class Application(models.Model):
     company = models.ForeignKey(to=Company, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ["port", "server"]
+        ordering = ["port"]
 
     def __str__(self) -> str:
         return self.name_run_on_server
+
+
+class DockerApplication(models.Model):
+    name_run_on_docker = models.CharField(max_length=50)
+    container_name = models.CharField(max_length=50)
+    port = models.IntegerField(default=0)
+    server = models.ForeignKey(to=Server, on_delete=models.CASCADE)
+    company = models.ForeignKey(to=Company, on_delete=models.CASCADE)
+
 
 class Domain(models.Model):
     domain = models.CharField(max_length=50)
@@ -52,9 +63,13 @@ class Domain(models.Model):
     def __str__(self) -> str:
         return self.domain
 
+
 class Alert(models.Model):
-    
+
     time = models.DateTimeField()
-    server = models.ForeignKey(to=Server, on_delete =models.SET_NULL, null=True)
-    application = models.ForeignKey(to=Application, on_delete =models.SET_NULL, null=True)
+    server = models.ForeignKey(to=Server, on_delete=models.SET_NULL, null=True)
+    application = models.ForeignKey(
+        to=Application, on_delete=models.SET_NULL, null=True
+    )
     domain = models.ForeignKey(to=Domain, on_delete=models.SET_NULL, null=True)
+    docker = models.ForeignKey(to=DockerApplication, on_delete=models.SET_NULL, null=True)

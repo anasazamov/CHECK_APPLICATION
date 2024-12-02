@@ -7,20 +7,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('check_server', '0003_rename_ip_server_ipv4_alter_server_unique_together'),
+        ("check_server", "0003_rename_ip_server_ipv4_alter_server_unique_together"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Domain',
+            name="Domain",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('domain', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("domain", models.CharField(max_length=50)),
             ],
         ),
         migrations.AddField(
-            model_name='alert',
-            name='domain',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='check_server.domain'),
+            model_name="alert",
+            name="domain",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="check_server.domain",
+            ),
         ),
     ]

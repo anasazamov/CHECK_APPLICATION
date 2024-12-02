@@ -8,37 +8,57 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('check_server', '0005_domain_server'),
+        ("check_server", "0005_domain_server"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Company',
+            name="Company",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('chanel_id', models.CharField(max_length=50)),
-                ('bot_token', models.CharField(max_length=100)),
-                ('user', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                ("chanel_id", models.CharField(max_length=50)),
+                ("bot_token", models.CharField(max_length=100)),
+                ("user", models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
-            model_name='application',
-            name='company',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='check_server.company'),
+            model_name="application",
+            name="company",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="check_server.company",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='domain',
-            name='company',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='check_server.company'),
+            model_name="domain",
+            name="company",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="check_server.company",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='server',
-            name='company',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='check_server.company'),
+            model_name="server",
+            name="company",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="check_server.company",
+            ),
             preserve_default=False,
         ),
     ]

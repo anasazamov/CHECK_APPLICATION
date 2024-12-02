@@ -3,13 +3,21 @@ import ssl
 from datetime import datetime, timedelta
 
 from ping3 import ping
+import json
+from typing import TYPE_CHECKING
+
+# if TYPE_CHECKING:
+
+# from connect_server import ssh_connect
+
 
 def is_server_alive(ip):
     try:
-        response = ping(ip, timeout=1)  
+        response = ping(ip, timeout=1)
         return response is not None
     except Exception:
         return False
+
 
 def is_port_open(ip, port):
     try:
@@ -18,12 +26,42 @@ def is_port_open(ip, port):
             result = s.connect_ex((ip, port))
             return result == 0
     except Exception as e:
-          return False
+        return False
 
 
-import socket
-import ssl
-from datetime import datetime
+def get_docker_ports_via_ssh(ssh):
+    command = "docker ps --format '{{json .}}'"
+    stdin, stdout, stderr = ssh.exec_command(command)
+
+    containers_output = stdout.read().decode("utf-8")
+
+    # Yangi konteynerlar ro'yxatini olish
+    containers = containers_output.splitlines()
+
+    container_ports = {}
+
+    for container in containers:
+
+        container_info = json.loads(container)
+        container_name = container_info.get("Names", "").replace("/", "")
+        ports = container_info.get("Ports", "")
+
+        if ports:
+            port_mapping = {}
+            for port_info in ports.split(","):
+                port_parts = port_info.split("->")
+                if len(port_parts) == 2:
+                    external_port = port_parts[1].strip().split("/")[0]
+                    internal_port = port_parts[0].strip()
+                    service_name = container_info.get("Image", "Unknown service")
+                    port_mapping[external_port] = {
+                        "internal_port": internal_port,
+                        "service": service_name,
+                    }
+            container_ports[container_name] = port_mapping
+
+    return container_ports
+
 
 def check_ssl_certificate(domain):
     try:
@@ -34,8 +72,10 @@ def check_ssl_certificate(domain):
 
                 cert = ssl_sock.getpeercert()
 
-                not_before = datetime.strptime(cert['notBefore'], '%b %d %H:%M:%S %Y %Z')
-                not_after = datetime.strptime(cert['notAfter'], '%b %d %H:%M:%S %Y %Z')
+                not_before = datetime.strptime(
+                    cert["notBefore"], "%b %d %H:%M:%S %Y %Z"
+                )
+                not_after = datetime.strptime(cert["notAfter"], "%b %d %H:%M:%S %Y %Z")
 
                 current_time = datetime.utcnow()
                 is_valid = not_before <= current_time <= not_after
@@ -48,4 +88,50 @@ def check_ssl_certificate(domain):
                 }
 
     except Exception as e:
-        return {"domain": domain, "error": str(e), "is_valid": False, "valid_to": datetime.now()-timedelta(days=10)}
+        return {
+            "domain": domain,
+            "error": str(e),
+            "is_valid": False,
+            "valid_to": datetime.now(),
+        }
+
+
+def get_open_ports(ssh):
+    try:
+        stdin, stdout, stderr = ssh.exec_command("netstat -tuln")
+
+        output = stdout.read().decode()
+
+        open_ports = []
+        for line in output.splitlines():
+            if "LISTEN" in line:
+                parts = line.split()
+                port = parts[3].split(":")[-1]
+                open_ports.append(port)
+
+        return open_ports
+
+    except Exception as e:
+        return []
+
+
+def is_inner_port(ssh, port):
+    docker_data = get_docker_ports_via_ssh(ssh).values()
+    ports = []
+    for port_item in docker_data:
+
+        ports += list(port_item.keys())
+    return str(port) in ports
+
+
+def get_cainteners(data: dict, target_key: str) -> list:
+    parent_keys = []
+    for parent_key, nested_data in data.items():
+        if target_key in nested_data:
+            parent_keys.append(parent_key)
+    return parent_keys
+
+
+# ssh = ssh_connect("127.0.0.1", "linux", "242000", 22)
+# from pprint import pprint
+# pprint(get_docker_ports_via_ssh((ssh)))

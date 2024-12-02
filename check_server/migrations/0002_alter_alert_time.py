@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('check_server', '0001_initial'),
+        ("check_server", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='alert',
-            name='time',
+            model_name="alert",
+            name="time",
             field=models.DateTimeField(),
         ),
     ]

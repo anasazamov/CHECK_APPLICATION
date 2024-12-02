@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 import os
 from pathlib import Path
 from celery.schedules import crontab
@@ -26,8 +27,8 @@ SECRET_KEY = "django-insecure-zeltg0wqygpomg@%4o0w!6!8&c!pr%2pmyrm5rlk3tw2n^sd41
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-APPEND_SLASH=False
+ALLOWED_HOSTS = ["*"]
+APPEND_SLASH = False
 
 # Application definition
 
@@ -40,13 +41,17 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-INSTALLED_APPS += ['django_celery_results', 'check_server.apps.CheckServerConfig', 'django_celery_beat']
+INSTALLED_APPS += [
+    "django_celery_results",
+    "check_server.apps.CheckServerConfig",
+    "django_celery_beat",
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -102,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = '/login/'
+LOGIN_URL = "/login/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -119,8 +124,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -128,29 +133,30 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Redis broker URL
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = "redis://localhost:6379/0"
 
 # Task natijalari uchun Redis backend
 CELERY_RESULT_BACKEND = None
 
 # Tasklarni avtomatik aniqlash
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
 
 # Tasklarni kechiktirilgan holda qabul qilish
 CELERY_TASK_ALWAYS_EAGER = False
 # Natijalarni saqlamaslik
 CELERY_IGNORE_RESULT = True
+DOMAIN = "-"
 
 
 CELERY_BEAT_SCHEDULE = {
-    'manitor-server': {
-        'task': 'check_server.tasks.manitor_server',
-        'schedule': crontab(minute='*/10')},
-    
-    'check-domain-ssl': {
-        'task': 'check_server.tasks.check_domain_ssl',
-        'schedule': crontab(minute='*/10')}
-    
+    "manitor-server": {
+        "task": "check_server.tasks.manitor_server",
+        "schedule": crontab(minute="*/10"),
+    },
+    "check-domain-ssl": {
+        "task": "check_server.tasks.check_domain_ssl",
+        "schedule": crontab(minute="*/11"),
+    },
 }

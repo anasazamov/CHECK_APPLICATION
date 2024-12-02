@@ -7,14 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('check_server', '0004_domain_alert_domain'),
+        ("check_server", "0004_domain_alert_domain"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='domain',
-            name='server',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='check_server.server'),
+            model_name="domain",
+            name="server",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="check_server.server",
+            ),
             preserve_default=False,
         ),
     ]

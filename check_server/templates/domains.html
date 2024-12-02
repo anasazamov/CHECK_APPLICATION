@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="domain-list">
+    <h3>Domains</h3>
+
+    <!-- Button to open the Domains Modal -->
+    <button id="openFormBtnDomain">Add Domain</button>
+
+    <!-- Modal for Domains -->
+    <div id="myModalDomain" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Domain</h2>
+            <form method="POST" id="serverFormDomain" action="/add-domain">
+                {% csrf_token %}
+                <label for="id_name">Domain:</label>
+                <input type="text" name="domain" class="form-control" id="id_name" required>
+                <input type="hidden" name="server" value={{server.id}}>
+                <input type="hidden" name="company" value={{server.company.id}}>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="domain-container">
+        {% for domain in domains %}
+        <div class="domain-item {% if domain.is_valid %}valid{% else %}invalid{% endif %}">
+            <div class="domain-header">
+                <span class="domain-name"><strong>Domain:</strong> {{ domain.domain }}</span>
+            </div>
+            <div class="domain-body">
+                <span class="domain-valid-to"><strong>Validity Period:</strong> {{ domain.valid_to }}</span>
+                <span class="domain-days"><strong>Remaining days:</strong> {{ domain.days }}</span>
+                <span class="domain-ssl"><strong>SSL:</strong> 
+                    {% if domain.is_valid %}
+                        Yes
+                    {% else %}
+                        No
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

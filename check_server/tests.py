@@ -20,10 +20,7 @@ class TestManitorServerTask(TestCase):
             name_run_on_server="nginx",
             port=80,
         )
-        self.alert = Alert.objects.create(
-            application=self.application,
-            time=now()
-        )
+        self.alert = Alert.objects.create(application=self.application, time=now())
 
     @patch("check_server.check_functions.is_server_alive", return_value=False)
     @patch("check_server.send_telegram_notifacation.send_alert_with_file")
@@ -33,10 +30,7 @@ class TestManitorServerTask(TestCase):
 
         alert = Alert.objects.filter(server=self.server).first()
 
-
-        mock_send_alert.send_alert_with_file(
-            "127.0.0.1", "Server is Test Server"
-        )
+        mock_send_alert.send_alert_with_file("127.0.0.1", "Server is Test Server")
 
     @patch("check_server.check_functions.is_server_alive", return_value=True)
     @patch("check_server.check_functions.is_port_open", return_value=False)
@@ -44,7 +38,12 @@ class TestManitorServerTask(TestCase):
     @patch("check_server.get_log.get_logs", return_value="Sample logs")
     @patch("check_server.send_telegram_notifacation.send_alert_with_file")
     def test_application_down_alert(
-        self, mock_send_alert, mock_get_logs, mock_ssh_connect, mock_is_port_open, mock_is_server_alive
+        self,
+        mock_send_alert,
+        mock_get_logs,
+        mock_ssh_connect,
+        mock_is_port_open,
+        mock_is_server_alive,
     ):
 
         ssh_mock = MagicMock()
@@ -55,9 +54,7 @@ class TestManitorServerTask(TestCase):
         alert = Alert.objects.filter(application=self.application).first()
         self.assertIsNotNone(alert)
 
-        mock_send_alert.send_alert_with_file(
-            "127.0.0.1", "nginx", "Sample logs", 80
-        )
+        mock_send_alert.send_alert_with_file("127.0.0.1", "nginx", "Sample logs", 80)
 
         mock_get_logs.get_logs(ssh_mock, "nginx")
 
@@ -80,7 +77,11 @@ class TestManitorServerTask(TestCase):
     ):
 
         ssh_mock = MagicMock()
-        ssh_mock.exec_command.return_value = (MagicMock(), MagicMock(), MagicMock())  # stdin, stdout, stderr
+        ssh_mock.exec_command.return_value = (
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+        )  # stdin, stdout, stderr
         mock_ssh_connect.return_value = ssh_mock
 
         manitor_server()
@@ -99,4 +100,3 @@ class TestManitorServerTask(TestCase):
 
         alerts = Alert.objects.filter(server=self.server)
         self.assertEqual(alerts.count(), 1)
-
