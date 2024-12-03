@@ -711,3 +711,9 @@ tab {
     border: 1px solid #ccc;
     border-top: none;
     }
+
+    a {
+        all: unset;
+        cursor: pointer;
+    }
+    

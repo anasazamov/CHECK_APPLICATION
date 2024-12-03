@@ -26,7 +26,7 @@
     <!-- Search Bar -->
     <div class="search-container">
         <form action="/" method="get" class="search-container">
-            {% csrf_token %}
+            
             {% if name %}
                 <input type="text" class="search-bar" value="{{name}}" name="name" placeholder="Search">
             {% else %}

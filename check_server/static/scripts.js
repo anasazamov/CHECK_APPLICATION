@@ -112,6 +112,48 @@ function handleFormSubmission(formId, modal) {
     };
 }
 
+// Function to handle form submission
+function handleFormSubmission(formId, modal) {
+    var form = document.getElementById(formId);
+    form.onsubmit = function(event) {
+        event.preventDefault();  // Prevent page reload on form submission
+
+        var formData = new FormData(this);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", this.action, true);
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+
+                if (response.success === false) {
+                    // Show errors if any
+                    for (var key in response.message) {
+                        if (response.message.hasOwnProperty(key)) {
+                            showError(response.message[key].join(", "));
+                        }
+                    }
+                } else {
+                    // Show success message and reset form
+                    showSuccess(response.message);
+                    form.reset();
+                    closeModal(modal); // Close the modal after success
+                    
+                    // Refresh the page if success is true
+                    if (response.success === true) {
+                        setTimeout(function() {
+                            location.reload(); // Refresh the page
+                        }, 1000); // Add a small delay if needed
+                    }
+                }
+            }
+        };
+
+        xhr.send(formData);  // Send the form data with the XMLHttpRequest
+    };
+}
+
+
 // Attach form handlers to all forms
 handleFormSubmission("serverForm", modalApp);  // For the "App" modal
 handleFormSubmission("serverFormDockerApp", modalDockerApp);  // For the Docker modal

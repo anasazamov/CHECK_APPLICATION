@@ -146,7 +146,7 @@ def applications(request, server_id):
         "server": server,
         "apps": apps,
         "domains": domains,
-        "perdormance": performance,
+        "performance": performance,
         "docker_apps": docker_apps,
     }
 
