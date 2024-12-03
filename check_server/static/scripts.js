@@ -1,135 +1,118 @@
-        // Get modal elements and close buttons
-        var modalApp = document.getElementById("myModalApp");
-        var modalDomain = document.getElementById("myModalDomain");
-        var closeBtns = document.getElementsByClassName("close");
+// Get modal elements
+var modalApp = document.getElementById("myModalApp");
+var modalDockerApp = document.getElementById("myModalDockerApp");
+var modalDomain = document.getElementById("myModalDomain");
 
-        // Button to open the modal for Apps
-        var openFormBtnApp = document.getElementById("openFormBtnApp");
-        // Button to open the modal for Domains
-        var openFormBtnDomain = document.getElementById("openFormBtnDomain");
+// Get buttons to open modals
+var openFormBtnApp = document.getElementById("openFormBtnApp");
+var openFormBtnDocker = document.getElementById("openFormBtnDockerApp");
+var openFormBtnDomain = document.getElementById("openFormBtnDomain");
 
-        // When the user clicks the button for Apps, open the modal
-        openFormBtnApp.onclick = function() {
-            modalApp.style.display = "block";  // Show Apps modal
-        }
+// Get close buttons
+var closeBtns = document.getElementsByClassName("close");
 
-        // When the user clicks the button for Domains, open the modal
-        openFormBtnDomain.onclick = function() {
-            modalDomain.style.display = "block";  // Show Domains modal
-        }
+// Function to open a modal
+function openModal(modal) {
+    modal.style.display = "block";
+}
 
-        // When the user clicks on the close button for either modal, close it
-        for (var i = 0; i < closeBtns.length; i++) {
-            closeBtns[i].onclick = function() {
-                modalApp.style.display = "none";  // Hide Apps modal
-                modalDomain.style.display = "none";  // Hide Domains modal
-            }
-        }
+// Function to close a modal
+function closeModal(modal) {
+    modal.style.display = "none";
+}
 
-        // When the user clicks anywhere outside the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modalApp) {
-                modalApp.style.display = "none";  // Hide Apps modal if clicked outside
-            } else if (event.target == modalDomain) {
-                modalDomain.style.display = "none";  // Hide Domains modal if clicked outside
-            }
-        }
+// Event listeners for opening modals
+openFormBtnApp.onclick = function() {
+    openModal(modalApp);
+}
+openFormBtnDocker.onclick = function() {
+    openModal(modalDockerApp);
+}
+openFormBtnDomain.onclick = function() {
+    openModal(modalDomain);
+}
 
-        // Function to show error popup with a message
-        function showError(message) {
-            var errorPopup = document.getElementById("errorPopup");
-            errorPopup.textContent = message;  // Set the error message text
-            errorPopup.style.display = "block"; // Show the popup
+// Event listeners for closing modals
+for (var i = 0; i < closeBtns.length; i++) {
+    closeBtns[i].onclick = function() {
+        closeModal(modalApp);
+        closeModal(modalDomain);
+        closeModal(modalDockerApp);
+    }
+}
 
-            // Automatically hide the popup after 5 seconds
-            setTimeout(function() {
-                errorPopup.style.display = "none"; // Hide the popup
-            }, 5000);
-        }
+// Close modals when clicking outside of them
+window.onclick = function(event) {
+    if (event.target == modalApp) {
+        closeModal(modalApp);
+    } else if (event.target == modalDomain) {
+        closeModal(modalDomain);
+    } else if (event.target == modalDockerApp) {
+        closeModal(modalDockerApp);
+    }
+}
 
-        function showSuccess(message) {
-            var successPopup = document.createElement('div');
-            successPopup.classList.add('success-popup');
-            successPopup.textContent = message;
+// Function to show error popup with a message
+function showError(message) {
+    var errorPopup = document.getElementById("errorPopup");
+    errorPopup.textContent = message;
+    errorPopup.style.display = "block";
 
-            // Append the success popup to the body
-            document.body.appendChild(successPopup);
+    setTimeout(function() {
+        errorPopup.style.display = "none";
+    }, 5000);
+}
 
-            // Show the success popup
-            successPopup.style.display = "block";
+// Function to show success popup with a message
+function showSuccess(message) {
+    var successPopup = document.createElement('div');
+    successPopup.classList.add('success-popup');
+    successPopup.textContent = message;
 
-            // Automatically hide the success popup after 5 seconds
-            setTimeout(function() {
-                successPopup.style.display = "none"; // Hide the popup
-                document.body.removeChild(successPopup); // Remove the popup element from DOM
-            }, 5000);
-        }
+    document.body.appendChild(successPopup);
+    successPopup.style.display = "block";
 
-        // Handle form submission with Ajax to prevent page reload
-        document.getElementById("serverForm").onsubmit = function(event) {
-            event.preventDefault();  // Prevent default form submission
+    setTimeout(function() {
+        successPopup.style.display = "none";
+        document.body.removeChild(successPopup);
+    }, 5000);
+}
 
-            var formData = new FormData(this);
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", this.action, true);
+// Function to handle form submission
+function handleFormSubmission(formId, modal) {
+    var form = document.getElementById(formId);
+    form.onsubmit = function(event) {
+        event.preventDefault();  // Prevent page reload on form submission
 
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
+        var formData = new FormData(this);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", this.action, true);
 
-                    if (response.success === false) {
-                        // Loop through error messages and show them
-                        for (var key in response.message) {
-                            if (response.message.hasOwnProperty(key)) {
-                                showError(response.message[key].join(", "));
-                            }
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+
+                if (response.success === false) {
+                    // Show errors if any
+                    for (var key in response.message) {
+                        if (response.message.hasOwnProperty(key)) {
+                            showError(response.message[key].join(", "));
                         }
-                    } else {
-                        // Success case - Show success message
-                        showSuccess(response.message); // Show success message
-
-                        // Optionally reset the form
-                        document.getElementById("serverForm").reset();
-
-                        // Close the modal after success
-                        modalApp.style.display = "none"; // Close the modal
                     }
+                } else {
+                    // Show success message and reset form
+                    showSuccess(response.message);
+                    form.reset();
+                    closeModal(modal); // Close the modal after success
                 }
-            };
-
-            xhr.send(formData);
+            }
         };
 
-        document.getElementById("serverFormDomain").onsubmit = function(event) {
-            event.preventDefault();  // Prevent default form submission
+        xhr.send(formData);  // Send the form data with the XMLHttpRequest
+    };
+}
 
-            var formData = new FormData(this);
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", this.action, true);
-
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-
-                    if (response.success === false) {
-                        // Loop through error messages and show them
-                        for (var key in response.message) {
-                            if (response.message.hasOwnProperty(key)) {
-                                showError(response.message[key].join(", "));
-                            }
-                        }
-                    } else {
-                        // Success case - Show success message
-                        showSuccess(response.message); // Show success message
-
-                        // Optionally reset the form
-                        document.getElementById("serverFormDomain").reset();
-
-                        // Close the modal after success
-                        modalDomain.style.display = "none"; // Close the modal
-                    }
-                }
-            };
-
-            xhr.send(formData);
-        };
+// Attach form handlers to all forms
+handleFormSubmission("serverForm", modalApp);  // For the "App" modal
+handleFormSubmission("serverFormDockerApp", modalDockerApp);  // For the Docker modal
+handleFormSubmission("serverFormDomain", modalDomain);  // For the Domain modal

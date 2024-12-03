@@ -11,7 +11,7 @@ from .check_functions import (
     is_port_open,
     check_ssl_certificate,
     get_docker_ports_via_ssh,
-    is_inner_port
+    is_docker_port_active,
 )
 
 host_name = settings.ALLOWED_HOSTS
@@ -201,7 +201,7 @@ def check_docker_app():
     )
 
     for server in servers:
-        
+
         id = server["id"]
         ipv4 = server["ipv4"]
         username = server["username"]
@@ -210,7 +210,7 @@ def check_docker_app():
         name = server["name"]
         days_difference = 5
         chanel_id = server["company__chanel_id"]
-        
+
         if not is_server_alive(ipv4):
 
             alert = Alert.objects.filter(server_id=id)
@@ -233,7 +233,7 @@ def check_docker_app():
             continue
 
         applications = DockerApplication.objects.filter(server_id=id).values(
-            "id", "name_run_on_docker", "port" , "container_name"
+            "id", "name_run_on_docker", "port", "container_name"
         )
 
         ssh = ssh_connect(ipv4, username, password, ssh_port)
@@ -245,18 +245,20 @@ def check_docker_app():
             container_name = application["container_name"]
             port = application["port"]
 
-            if not is_inner_port(ssh, port):
+            if not is_docker_port_active(ssh, port, container_name):
 
                 if ssh:
 
-                    docker_data = get_logs_and_performance_by_port(ssh, container_name, port)
-                    
-                    image_name = docker_data['image_name']
-                    logs = docker_data['recent_logs']
-                
+                    docker_data = get_logs_and_performance_by_port(
+                        ssh, container_name, port
+                    )
+
+                    image_name = docker_data["image_name"]
+                    logs = docker_data["recent_logs"]
+
                 else:
                     logs = ""
-                    image_name = ''
+                    image_name = ""
 
                 alert = Alert.objects.filter(docker_id=app_id)
                 if alert.exists():
@@ -283,4 +285,3 @@ def check_docker_app():
                         id=id,
                     )
         ssh.close()
-

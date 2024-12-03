@@ -147,16 +147,20 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_ALWAYS_EAGER = False
 # Natijalarni saqlamaslik
 CELERY_IGNORE_RESULT = True
-DOMAIN = "-"
+DOMAIN = "localhost:8000"
 
 
 CELERY_BEAT_SCHEDULE = {
     "manitor-server": {
         "task": "check_server.tasks.manitor_server",
-        "schedule": crontab(minute="*/10"),
+        "schedule": crontab(minute="*/12"),
     },
     "check-domain-ssl": {
         "task": "check_server.tasks.check_domain_ssl",
+        "schedule": crontab(minute="*/10"),
+    },
+    "check-docker-app": {
+        "task": "check_server.tasks.check_docker_app",
         "schedule": crontab(minute="*/11"),
     },
 }

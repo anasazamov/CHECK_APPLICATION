@@ -47,7 +47,7 @@ class DomainForm(forms.ModelForm):
         fields = ["domain", "company", "server"]
 
 
-class DockerApplication(forms.ModelForm):
+class DockerApplicationForm(forms.ModelForm):
 
     class Meta:
         model = DockerApplication

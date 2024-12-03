@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="server-details">
+    <h2>{{ service }} Details</h2>
+    <div style="margin-bottom: 20px;">
+        <p><strong>Status:</strong> 
+            <span style="color: {% if status == 'active' %} var(--success-color) {% else %} var(--error-color) {% endif %};">
+                {{ status }}
+            </span>
+        </p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3>Performance</h3>
+        <ul>
+            {% for metric in performance %}
+                <li>{{ metric }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        <h3>Recent Logs</h3>
+        <textarea id="logs-textarea" readonly style="width: 100%; height: 150px; resize: vertical; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; font-family: monospace; background-color: var(--background-color);">
+            {{ recent_logs }}
+        </textarea>
+    </div>
+</div>
+{% endblock %}

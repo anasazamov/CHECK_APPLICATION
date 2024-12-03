@@ -17,8 +17,8 @@ def send_alert_with_file(
         f"<b>Red Alert:</b>\n"
         f"<b>Server:</b> {server_ip}\n"
         f"<b>Port:</b> {port}\n"
-        f"<b>Service:</b> {service_name} not working!\n"
-        f"https://{host_name}/apps/{id}"
+        f"<b>Service:</b> {service_name} is not working!\n"
+        f"{host_name}/apps/{id}"
     )
 
     (

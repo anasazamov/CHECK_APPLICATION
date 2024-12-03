@@ -82,13 +82,60 @@
     <!-- Server list -->
     <div class="server-list">
         {% for app in apps %}
-        <a href="/app-info/{{ app.id }}"></a>
+        <a href="/app-info/{{ app.id }}">
             {% if app.is_active %}
                 <div class="server-item green">
             {% else %}
                 <div class="server-item red">
             {% endif %}
                     <span class="server-name">{{ app.name_run_on_server }}</span>
+                    <span class="server-ip">{{ app.port }}</span>
+                </div>
+        {% endfor %}
+        </a>
+    </div>
+
+    <h3 style="margin-top: 30px;">Docker Apps</h3>
+
+    <!-- Button to open the Docker Apps Modal -->
+    <button id="openFormBtnDockerApp">Add Docker Apps</button>
+
+    <!-- Modal for Apps -->
+    <div id="myModalDockerApp" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Apps</h2>
+
+            <form method="POST" id="serverFormDockerApp" action="/add-docker">
+                {% csrf_token %}
+                <label for="id_name">Name Run On Docker:</label>
+                <input type="text" name="name_run_on_docker" class="form-control" id="id_name" required>
+
+                <label for="id_name">Container Name:</label>
+                <input type="text" name="container_name" class="form-control" id="id_name" required>
+
+                <label for="id_ipv4">Port:</label>
+                <input type="text" name="port" class="form-control" id="id_ipv4" required>
+
+                <input type="hidden" name="server" value={{server.id}}>
+                <input type="hidden" name="company" value={{server.company.id}}>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Server list -->
+    <div class="server-list">
+        
+        {% for app in docker_apps %}
+        <a href="/docker-info/{{ app.id }}">
+            {% if app.is_active %}
+                <div class="server-item green">
+            {% else %}
+                <div class="server-item red">
+            {% endif %}
+                    <span class="server-name">{{ app.container_name }}</span>
                     <span class="server-ip">{{ app.port }}</span>
                 </div>
         {% endfor %}

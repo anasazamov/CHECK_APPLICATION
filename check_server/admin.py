@@ -53,7 +53,8 @@ class IsActiveFilterApp(IsActiveFilter):
             ]
             return queryset.filter(id__in=inactive_ids)
         return queryset
-    
+
+
 # class IsActiveFilterDocer(IsActiveFilterApp):
 
 #     def queryset(self, request, queryset):
@@ -71,6 +72,7 @@ class IsActiveFilterApp(IsActiveFilter):
 #             ]
 #             return queryset.filter(id__in=inactive_ids)
 #         return queryset
+
 
 @admin.register(Server)
 class ServerAdminView(admin.ModelAdmin):
@@ -136,6 +138,7 @@ class ApplicationAdminView(admin.ModelAdmin):
     is_active.short_description = "Is Active"
     is_active.boolean = True
 
+
 @admin.register(DockerApplication)
 class DockerApplicationAdminView(admin.ModelAdmin):
 
@@ -164,7 +167,12 @@ class DockerApplicationAdminView(admin.ModelAdmin):
         return obj.server.name
 
     def is_active(self, obj):
-        ssh = ssh_connect(obj.server.ipv4, obj.server.username, obj.server.password, obj.server.ssh_port)
+        ssh = ssh_connect(
+            obj.server.ipv4,
+            obj.server.username,
+            obj.server.password,
+            obj.server.ssh_port,
+        )
         is_active = is_inner_port(ssh, obj.port)
         ssh.close()
         return is_active

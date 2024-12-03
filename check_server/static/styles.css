@@ -225,7 +225,7 @@ body {
 /* Mobile view: 1 column per row for small screens */
 @media (max-width: 768px) {
     .server-list {
-        grid-template-columns: repeat(2, 1fr); /* 2 items per row */
+        grid-template-columns: repeat(5, 1fr); /* 2 items per row */
     }
 
     .server-item {
@@ -242,7 +242,7 @@ body {
 /* Extra small screens (phones in portrait mode) */
 @media (max-width: 480px) {
     .server-list {
-        grid-template-columns: 1fr; /* 1 item per row */
+        grid-template-columns: 5fr; /* 1 item per row */
     }
 
     .server-item {
@@ -647,6 +647,21 @@ button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
+#openFormBtnDockerApp {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px;
+}
+
+#openFormBtnDockerApp:hover {
+    background-color: #0056b3;
+}
+
 #openFormBtnApp {
     padding: 10px 20px;
     font-size: 16px;
@@ -661,3 +676,38 @@ button[type="submit"]:hover {
 #openFormBtnApp:hover {
     background-color: #0056b3;
 }
+
+tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    }
+    
+    /* Style the buttons inside the tab */
+    tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    }
+    
+    /* Change background color of buttons on hover */
+    tab button:hover {
+    background-color: #ddd;
+    }
+    
+    /* Create an active/current tablink class */
+    tab button.active {
+    background-color: #ccc;
+    }
+    
+    /* Style the tab content */
+    tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+    }

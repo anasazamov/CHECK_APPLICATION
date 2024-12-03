@@ -46,6 +46,9 @@ class Application(models.Model):
     def __str__(self) -> str:
         return self.name_run_on_server
 
+    class Meta:
+        unique_together = ["port", "server"]
+
 
 class DockerApplication(models.Model):
     name_run_on_docker = models.CharField(max_length=50)
@@ -53,6 +56,12 @@ class DockerApplication(models.Model):
     port = models.IntegerField(default=0)
     server = models.ForeignKey(to=Server, on_delete=models.CASCADE)
     company = models.ForeignKey(to=Company, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self.container_name} {self.port}"
+
+    class Meta:
+        unique_together = ["port", "server", "container_name"]
 
 
 class Domain(models.Model):
@@ -63,6 +72,9 @@ class Domain(models.Model):
     def __str__(self) -> str:
         return self.domain
 
+    class Meta:
+        unique_together = ["server", "domain"]
+
 
 class Alert(models.Model):
 
@@ -72,4 +84,6 @@ class Alert(models.Model):
         to=Application, on_delete=models.SET_NULL, null=True
     )
     domain = models.ForeignKey(to=Domain, on_delete=models.SET_NULL, null=True)
-    docker = models.ForeignKey(to=DockerApplication, on_delete=models.SET_NULL, null=True)
+    docker = models.ForeignKey(
+        to=DockerApplication, on_delete=models.SET_NULL, null=True
+    )

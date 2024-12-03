@@ -8,6 +8,10 @@ from .views import (
     add_server,
     applications,
     add_apps,
+    add_domain,
+    app_info,
+    add_docker,
+    docker_info,
 )
 
 urlpatterns = [
@@ -18,6 +22,9 @@ urlpatterns = [
     path("device", camera, name="camera"),
     path("add-server", add_server, name="add-server"),
     path("apps/<int:server_id>/", applications, name="applications"),
-    path("add-apps", add_apps, name="aadd-applications"),
-    path("add-domain", add_apps, name="aadd-applications"),
+    path("add-apps", add_apps, name="add-applications"),
+    path("add-domain", add_domain, name="add-domain"),
+    path("add-docker", add_docker, name="add-domain"),
+    path("app-info/<int:app_id>", app_info, name="app-info"),
+    path("docker-info/<int:app_id>", docker_info, name="docker-info"),
 ]

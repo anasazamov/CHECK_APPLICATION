@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 
 from ping3 import ping
 import json
-from typing import TYPE_CHECKING
-
-# if TYPE_CHECKING:
 
 # from connect_server import ssh_connect
 
@@ -115,13 +112,14 @@ def get_open_ports(ssh):
         return []
 
 
-def is_inner_port(ssh, port):
-    docker_data = get_docker_ports_via_ssh(ssh).values()
+def is_docker_port_active(ssh, port, container_name):
+    docker_data = get_docker_ports_via_ssh(ssh).items()
     ports = []
-    for port_item in docker_data:
+    for key, port_key in docker_data:
+        ports += [(item_port, container_name) for item_port in list(port_key.keys())]
 
-        ports += list(port_item.keys())
-    return str(port) in ports
+    container_colections = (str(port), container_name)
+    return container_colections in ports
 
 
 def get_cainteners(data: dict, target_key: str) -> list:

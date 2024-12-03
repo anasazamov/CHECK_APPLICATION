@@ -1,5 +1,6 @@
 import paramiko
 
+
 # connect via SHH
 def ssh_connect(ip, username, password, port):
     ssh = paramiko.SSHClient()
@@ -54,6 +55,4 @@ def get_performance(ssh: paramiko.SSHClient):
     return performance_data
 
 
-
 ssh = ssh_connect("127.0.0.1", "linux", "242000", 22)
-
