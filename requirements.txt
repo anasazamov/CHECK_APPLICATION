@@ -67,6 +67,7 @@ pluggy==1.5.0
 poetry-core==1.9.1
 poetry-plugin-export==1.8.0
 prompt_toolkit==3.0.48
+psycopg2==2.9.10
 ptyprocess==0.7.0
 pycodestyle==2.12.1
 pycparser==2.22
@@ -104,6 +105,7 @@ vine==5.1.0
 virtualenv==20.27.1
 wcwidth==0.2.13
 websocket-client==1.8.0
+whitenoise==6.8.2
 zipp==3.21.0
 zope.component==6.0
 zope.event==5.0
