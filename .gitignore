@@ -171,3 +171,4 @@ log.txt
 Dockerfiles
 docker-compose.yml
 entrypoint.sh
+.zip
