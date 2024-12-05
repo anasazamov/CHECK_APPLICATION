@@ -4,7 +4,7 @@ from django.conf import settings
 
 host_name = settings.DOMAIN
 
-telegram_token = "7846581361:AAHWEXIAr0-BFfUrYHSjFzWLLRZOIi6CNvo"
+telegram_token = os.getenv("TELEGRAM_BOT_TOKEN")
 send_message_url = f"https://api.telegram.org/bot{telegram_token}/sendMessage"
 
 

@@ -38,7 +38,7 @@ def get_performance(ssh: paramiko.SSHClient):
         disk_usage = stdout.read().decode().strip()
         performance_data["disk_usage"] = disk_usage
 
-        # Tarmoq (opsiyonal)
+        # Network
         stdin, stdout, stderr = ssh.exec_command(
             "ifstat -i eth0 1 1 | awk 'NR==4 {print $1 \" kB/s\"}'"
         )
