@@ -168,7 +168,8 @@ log.txt
 
 #dockerfiles
 .dockerignore
-Dockerfiles
 docker-compose.yml
-entrypoint.sh
+# entrypoint.sh
 .zip
+.env
+Dockerfile
