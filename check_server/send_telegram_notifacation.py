@@ -47,3 +47,29 @@ def send_ssl_status(message, chat_id):
         send_message_url.format(telegram_token),
         data={"chat_id": chat_id, "text": message, "parse_mode": "HTML"},
     )
+
+
+def get_chat_info(chat_id):
+    chat_id = "-100" + str(chat_id)
+    url = f"https://api.telegram.org/bot{telegram_token}/getChat"
+    params = {"chat_id": chat_id}
+
+    response = requests.get(url, params=params)
+
+    if response.status_code == 200:
+        chat_data = response.json()
+        if chat_data["ok"]:
+            result = chat_data["result"]
+            return {
+                "chat_name": result.get("title", ""),
+                "chat_type": result.get("type", ""),
+                "username": result.get("username", ""),
+                "description": result.get("description", ""),
+            }
+        else:
+            return {"error": chat_data["description"], "success": True}
+    else:
+        return {
+            "error": f"Xatolik yuz berdi: {response.status_code}, {response.text}",
+            "success": False,
+        }

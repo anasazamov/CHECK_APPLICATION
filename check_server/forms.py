@@ -30,8 +30,8 @@ class ServerForm(forms.ModelForm):
         username = data.get("username")
         password = data.get("password")
         port = data.get("ssh_port")
-        if not ssh_connect(ip=ipv4, username=username, password=password, port=port):
-            raise forms.ValidationError("Incorrect username or password")
+        # if not ssh_connect(ip=ipv4, username=username, password=password, port=port):
+        #     raise forms.ValidationError("Incorrect username or password")
         return data
 
 

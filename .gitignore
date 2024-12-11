@@ -166,10 +166,11 @@ pyproject.toml
 poetry.lock
 log.txt
 
-#dockerfiles
+dockerfiles
 .dockerignore
 docker-compose.yml
-# entrypoint.sh
+entrypoint.sh
 .zip
 .env
 Dockerfile
+DOCKER_HUB_README.md

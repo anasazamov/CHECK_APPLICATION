@@ -1,89 +1,140 @@
-        // Get modal element and close button
-        var modal = document.getElementById("myModal");
-        var closeBtn = document.getElementsByClassName("close")[0];
+// Modal va form elementlarini olish
+const modal = document.getElementById("myModal");
+const form = document.getElementById("serverForm");
+const formTitle = document.querySelector("#myModal h2");
 
-        // Button to open the modal (form)
-        var openFormBtn = document.getElementById("openFormBtn");
+// Modalni ochish funksiyasi
+function openModal(mode, serverId = null) {
+    if (mode === "add") {
+        form.action = "{% url 'add-server' %}";
+        form.method = "POST";
+        formTitle.textContent = "Add Server";
+        form.reset();
+    } else if (mode === "update") {
+        fetch(`/servers/${serverId}/`)
+            .then(response => response.json())
+            .then(data => {
+                form.action = `/servers/${serverId}/update/`;
+                form.method = "POST";  // PUT o'rniga POST ishlatamiz, keyin PUT ni AJAX orqali jo'natamiz
+                formTitle.textContent = "Update Server";
+    
+                document.getElementById('id_name').value = data.name;
+                document.getElementById('id_ssh_port').value = data.ssh_port;
+                let ip = String(data.ipv4);
+                console.log(typeof(ip))
+                document.getElementById('id_ipv4').value = ip;
+                document.getElementById('id_username').value = data.username;
+                document.getElementById('id_password').value = data.password;
+    
+                // Modal fetch muvaffaqiyatli yakunlangandan keyin ochiladi
+                modal.style.display = "block";
+            })
+            .catch(error => {
+                console.error('Error fetching server data:', error);
+                alert('Error fetching server data.');
+            });
+    }
+    modal.style.display = "block";
+}
 
-        // When the user clicks the button, open the modal
-        openFormBtn.onclick = function() {
-            modal.style.display = "block";  // Show modal
+// Add Server tugmasi uchun hodisa
+document.getElementById("openFormBtn").onclick = () => openModal("add");
+
+// Update tugmalari uchun hodisa
+document.querySelectorAll(".update-btn").forEach(button => {
+    button.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const serverId = button.getAttribute("data-id");
+        openModal("update", serverId);
+    });
+});
+
+// Forma yuborishda PUT/POSTni boshqarish
+form.onsubmit = function (e) {
+    e.preventDefault();
+
+    const xhr = new XMLHttpRequest();
+    const isUpdate = form.action.includes("/update/");
+    xhr.open(isUpdate ? "PUT" : "POST", form.action, true);
+
+    xhr.onload = function () {
+        const response = JSON.parse(xhr.responseText);
+        if (xhr.status === 200 || xhr.status === 201) {
+            alert(response.message || "Operation successful");
+            location.reload();
+        } else {
+            alert("Operation failed");
         }
+    };
 
-        // When the user clicks on the close button, close the modal
-        closeBtn.onclick = function() {
-            modal.style.display = "none";  // Hide modal
+    xhr.onerror = function () {
+        alert("An error occurred");
+    };
+
+    xhr.send(new FormData(form));
+};
+
+// Modalni yopish
+document.querySelector('.close').addEventListener("click", () => {
+    modal.style.display = "none";
+});
+
+// Modal tashqarisiga bosilganda yopish
+window.onclick = function (e) {
+    if (e.target === modal) {
+        modal.style.display = "none";
+    }
+};
+
+// ===============================
+// Redirect on Item Click
+// ===============================
+
+// Add event listeners for items to redirect based on the data-link attribute
+document.querySelectorAll(".server-item, .domain-item").forEach(item => {
+    item.addEventListener("click", (e) => {
+        // Prevent the click event from affecting buttons inside the item
+        if (e.target.tagName === 'BUTTON') {
+            return;
         }
-
-        // When the user clicks anywhere outside the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";  // Hide modal if clicked outside
-            }
+        
+        const link = item.getAttribute("data-link");
+        if (link) {
+            window.location.href = link;
         }
+    });
+});
 
-        // Function to show error popup with a message
-        function showError(message) {
-            var errorPopup = document.getElementById("errorPopup");
-            errorPopup.textContent = message;  // Set the error message text
-            errorPopup.style.display = "block"; // Show the popup
+function getCsrfToken() {
+    const cookieValue = document.cookie.match(/csrftoken=([^ ;]+)/);
+    return cookieValue ? cookieValue[1] : "";
+}
 
-            // Automatically hide the popup after 5 seconds
-            setTimeout(function() {
-                errorPopup.style.display = "none"; // Hide the popup
-            }, 5000);
-        }
+document.querySelectorAll(".delete-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        const serverId = button.getAttribute("data-id");
+        const deleteUrl = `/servers/${serverId}/update/`;
 
-        function showSuccess(message) {
-            var successPopup = document.createElement('div');
-            successPopup.classList.add('success-popup');
-            successPopup.textContent = message;
-
-            // Append the success popup to the body
-            document.body.appendChild(successPopup);
-
-            // Show the success popup
-            successPopup.style.display = "block";
-
-            // Automatically hide the success popup after 5 seconds
-            setTimeout(function() {
-                successPopup.style.display = "none"; // Hide the popup
-                document.body.removeChild(successPopup); // Remove the popup element from DOM
-            }, 5000);
-        }
-
-        // Handle form submission with Ajax to prevent page reload
-        document.getElementById("serverForm").onsubmit = function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(this);
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", this.action, true);
-
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-
-                    if (response.success === false) {
-                        // Loop through error messages and show them
-                        for (var key in response.message) {
-                            if (response.message.hasOwnProperty(key)) {
-                                showError(response.message[key].join(", "));
-                            }
-                        }
-                        formData.reset()
-                    } else {
-                        // Success case - Show success message
-                        showSuccess(response.message); // Show success message
-
-                        // Optionally reset the form
-                        document.getElementById("serverForm").reset();
-
-                        // Close the modal after success
-                        modal.style.display = "none"; // Close the modal
-                    }
+        if (confirm("Are you sure you want to delete this server?")) {
+            fetch(deleteUrl, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": getCsrfToken(),
+                    "Content-Type": "application/json",
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Server deleted successfully");
+                    button.closest(".server-item").remove();
+                } else {
+                    alert("Failed to delete the server");
                 }
-            };
-
-            xhr.send(formData);
-        };
+            })
+            .catch(error => {
+                console.error("Error deleting server:", error);
+                alert("An error occurred while deleting the server");
+            });
+        }
+    });
+});

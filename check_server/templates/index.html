@@ -1,28 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Device Dashboard</title>
-    <link rel="stylesheet" href="{% static 'styles.css'%}">
+{% extends "base_generic.html" %}
 
-</head>
-<body>
-
-    <!-- Header section -->
-    <div class="header">
-        <div class="header-item">
-            <a href="/">Server</a>
-        </div>
-        <div class="header-item">
-            <a href="/device">Device</a>
-        </div>
-        <div class="header-item">
-            <a href="/logout/">Log out</a>
-        </div>
-    </div>
-
+{% block content %}
+{% load static %}
     <!-- Search Bar -->
     <div class="search-container">
         <form action="/" method="get" class="search-container">
@@ -36,6 +15,26 @@
         </form>
     </div>
 
+    <h4 style="max-width: 800;">Chanel Info</h4>
+    {% for chanel in chanels %}
+    <div class="server-details">
+        <ul>
+            <li><strong>Chanel Name:</strong> {{chanel.chat_name}}</li>
+            <li><strong>Type:</strong> {{chanel.chat_type}}</li>
+            <li><strong>Username:</strong> {{chanel.username}}</li>
+            <li><strong>Description:</strong> {{chanel.description}}</li>
+            <li><strong></strong> 
+                
+                <form action="" id="update-chanel">
+                    <label for="id_ipv4">Chanel ID:</label>
+                    <input type="number" name="chanel_id" class="form-control" id="id_ssh_port" value="{{ chanel.chat_id }}" required>
+                    <input type="hidden" name="company_id" value="{{ chanel.company_id }}">
+                    <button type="submit">Update</button>
+                </form>
+        </li>
+        </ul>
+    </div>
+    {% endfor %}
     <!-- Button to open the modal (form) -->
     <button id="openFormBtn">Add Server</button>
 
@@ -45,7 +44,7 @@
             <span class="close">&times;</span>
             <h2>Add Server</h2>
 
-            <form method="POST" id="serverForm" action="{% url 'add-server' %}">
+            <form method="POST" data-url="{% url 'add-server' %}" id="serverForm" >
                 {% csrf_token %}
                 <label for="id_name">Server Name:</label>
                 <input type="text" name="name" class="form-control" id="id_name" required>
@@ -67,19 +66,19 @@
         </div>
     </div>
 
-    <!-- Server list -->
+   <!-- Server list -->
     <div class="server-list">
         {% for server in servers %}
-        <a href="/apps/{{server.id}}/">
-            {% if server.is_active %}
-                <div class="server-item green">
-            {% else %}
-                <div class="server-item red">
-            {% endif %}
-                    <span class="server-name">{{ server.name }}</span>
-                    <span class="server-ip">{{ server.ipv4 }}</span>
-                </div>
-            </a>
+        <div class="server-item {% if server.is_active %} green {% else %} red {% endif %}" data-link="/apps/{{ server.id }}/">
+            <span class="server-name">{{ server.name }}</span>
+            <span class="server-ip">{{ server.ipv4 }}</span>
+            <div class="server-actions">
+                <!-- Update button -->
+                <button class="update-btn" data-id="{{ server.id }}">Update</button>
+                <!-- Delete button -->
+                <button class="delete-btn" data-id="{{ server.id }}">Delete</button>
+            </div>
+        </div>
         {% endfor %}
     </div>
 
@@ -94,6 +93,4 @@
     </div>
 
     <script src="{% static 'index.js' %}"></script>
-
-</body>
-</html>
+{% endblock %}

@@ -32,7 +32,6 @@ def get_docker_ports_via_ssh(ssh):
 
     containers_output = stdout.read().decode("utf-8")
 
-
     containers = containers_output.splitlines()
 
     container_ports = {}

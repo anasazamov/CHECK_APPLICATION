@@ -145,9 +145,11 @@ body {
 /* Server list */
 .server-list {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* Default: 5 items per row */
-    gap: 20px; /* Space between elements */
-    justify-items: center; /* Center items */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Moslashuvchan ustunlar */
+    gap: 20px; /* Elementlar orasidagi bo'shliq */
+    justify-items: center; /* Markazga joylash */
+    width: 100%; /* To'liq kenglik */
+    max-width: 1000px; /* Maksimal kenglikni cheklash */
 }
 
 /* Server item */
@@ -155,16 +157,15 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 150px; /* Width of each square */
-    height: 150px; /* Height of each square */
+    justify-content: space-between;
+    width: 100%; 
+    max-width: 220px;
+    padding: 15px;
+    background-color: var(--success-color);
     color: white;
     border-radius: 8px;
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
     transition: transform 0.3s ease;
 }
 
@@ -299,18 +300,20 @@ body {
 
 /* Button for opening the modal */
 #openFormBtn {
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 16px;
-    color: white;
     background-color: var(--primary-color);
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    margin: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 20px; 
 }
 
 #openFormBtn:hover {
     background-color: #0056b3;
+    transform: scale(1.05); 
 }
 
 /* Form Inputs and Submit Button */
@@ -507,7 +510,7 @@ button[type="submit"]:hover {
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 9999;
-    display: none; /* Initially hidden */
+    display: none; 
 }
 
 .success-popup {
@@ -526,7 +529,7 @@ button[type="submit"]:hover {
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 9999;
-    display: none; /* Initially hidden */
+    display: none; 
 }
 
 
@@ -567,10 +570,9 @@ button[type="submit"]:hover {
 }
 
 .domain-item.invalid {
-    border-left: 5px solid #dc3545; /* Qizil rangda chap chekka chizig'i */
+    border-left: 5px solid #dc3545; 
 }
 
-/* Domen elementlari uchun styling */
 .domain-header {
     margin-bottom: 10px;
     font-size: 16px;
@@ -581,7 +583,7 @@ button[type="submit"]:hover {
 .domain-body {
     font-size: 14px;
     line-height: 1.6;
-    color: #666; /* Matn rangi */
+    color: #666; 
 }
 
 .domain-name,
@@ -592,42 +594,39 @@ button[type="submit"]:hover {
     margin-bottom: 5px;
 }
 
-/* Hover effekti */
 .domain-item:hover {
-    transform: scale(1.03); /* 3% kattalashadi */
+    transform: scale(1.03); 
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsiv dizayn - mobil qurilmalar uchun */
 @media (max-width: 768px) {
     .domain-container {
-        grid-template-columns: repeat(2, 1fr); /* Mobil uchun 2 ta elementli qatorlar */
+        grid-template-columns: repeat(2, 1fr); 
         gap: 15px;
     }
 
     .domain-item {
-        max-width: 100%; /* Kenglikni 100% ga o'zgartirish */
-        padding: 12px; /* Kichikroq padding */
+        max-width: 100%; 
+        padding: 12px; 
     }
 }
 
-/* Responsiv dizayn - kichik ekranlar uchun */
 @media (max-width: 480px) {
     .domain-container {
-        grid-template-columns: 1fr; /* Har bir element yangi qatorda bo'lishi kerak */
+        grid-template-columns: 1fr; 
     }
 
     .domain-item {
-        max-width: 100%; /* Kenglikni 100% ga o'zgartirish */
-        padding: 10px; /* Kichikroq padding */
+        max-width: 100%; 
+        padding: 10px; 
     }
 
     .domain-header {
-        font-size: 14px; /* Sarlavhalar kichrayadi */
+        font-size: 14px; 
     }
 
     .domain-body {
-        font-size: 12px; /* Tanlangan matn ham kichrayadi */
+        font-size: 12px; 
     }
 }
 
@@ -677,43 +676,60 @@ button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-tab {
-    overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-    }
-    
-    /* Style the buttons inside the tab */
-    tab button {
-    background-color: inherit;
-    float: left;
-    border: none;
-    outline: none;
+a {
+    all: unset;
     cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-    }
+}
     
-    /* Change background color of buttons on hover */
-    tab button:hover {
-    background-color: #ddd;
-    }
-    
-    /* Create an active/current tablink class */
-    tab button.active {
-    background-color: #ccc;
-    }
-    
-    /* Style the tab content */
-    tabcontent {
-    display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
-    }
+.server-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
 
-    a {
-        all: unset;
-        cursor: pointer;
-    }
-    
+.update-btn, .delete-btn {
+    width: 80px;
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.update-btn {
+    background-color: var(--primary-color); 
+    color: white;
+}
+
+.update-btn:hover {
+    background-color: #0056b3; 
+    transform: scale(1.1);
+}
+
+.delete-btn {
+    background-color: var(--error-color); 
+    color: rgb(221, 38, 38);
+}
+
+.delete-btn:hover {
+    background-color: #c82333; 
+    transform: scale(1.1); 
+}
+
+
+.server-item {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: space-between;
+    width: 180px; 
+    height: auto;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    gap: 15px; 
+}

@@ -15,79 +15,197 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Company',
+            name="Company",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('chanel_id', models.CharField(max_length=50)),
-                ('date_joined', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('user', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                ("chanel_id", models.CharField(max_length=50)),
+                ("date_joined", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("user", models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
-            name='Server',
+            name="Server",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('ssh_port', models.IntegerField(default=22)),
-                ('ipv4', models.CharField(max_length=20)),
-                ('username', models.CharField(max_length=50)),
-                ('password', models.CharField(max_length=150)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='check_server.company')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                ("ssh_port", models.IntegerField(default=22)),
+                ("ipv4", models.CharField(max_length=20)),
+                ("username", models.CharField(max_length=50)),
+                ("password", models.CharField(max_length=150)),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="check_server.company",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('ipv4', 'username')},
+                "unique_together": {("ipv4", "username")},
             },
         ),
         migrations.CreateModel(
-            name='Domain',
+            name="Domain",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('domain', models.CharField(max_length=50)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='check_server.company')),
-                ('server', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='check_server.server')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("domain", models.CharField(max_length=50)),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="check_server.company",
+                    ),
+                ),
+                (
+                    "server",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="check_server.server",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('server', 'domain')},
+                "unique_together": {("server", "domain")},
             },
         ),
         migrations.CreateModel(
-            name='DockerApplication',
+            name="DockerApplication",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name_run_on_docker', models.CharField(max_length=50)),
-                ('container_name', models.CharField(max_length=50)),
-                ('port', models.IntegerField(default=0)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='check_server.company')),
-                ('server', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='check_server.server')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name_run_on_docker", models.CharField(max_length=50)),
+                ("container_name", models.CharField(max_length=50)),
+                ("port", models.IntegerField(default=0)),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="check_server.company",
+                    ),
+                ),
+                (
+                    "server",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="check_server.server",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('port', 'server', 'container_name')},
+                "unique_together": {("port", "server", "container_name")},
             },
         ),
         migrations.CreateModel(
-            name='Application',
+            name="Application",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name_run_on_server', models.CharField(max_length=50)),
-                ('port', models.IntegerField(default=0)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='check_server.company')),
-                ('server', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='check_server.server')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name_run_on_server", models.CharField(max_length=50)),
+                ("port", models.IntegerField(default=0)),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="check_server.company",
+                    ),
+                ),
+                (
+                    "server",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="check_server.server",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('port', 'server')},
+                "unique_together": {("port", "server")},
             },
         ),
         migrations.CreateModel(
-            name='Alert',
+            name="Alert",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('time', models.DateTimeField()),
-                ('application', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='check_server.application')),
-                ('docker', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='check_server.dockerapplication')),
-                ('domain', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='check_server.domain')),
-                ('server', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='check_server.server')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("time", models.DateTimeField()),
+                (
+                    "application",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="check_server.application",
+                    ),
+                ),
+                (
+                    "docker",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="check_server.dockerapplication",
+                    ),
+                ),
+                (
+                    "domain",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="check_server.domain",
+                    ),
+                ),
+                (
+                    "server",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="check_server.server",
+                    ),
+                ),
             ],
         ),
     ]

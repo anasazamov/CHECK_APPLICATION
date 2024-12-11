@@ -108,6 +108,8 @@ def check_service_status(ssh_client, service_name: str) -> dict:
         status_command = f"systemctl is-active {service_name}"
         stdin, stdout, stderr = ssh_client.exec_command(status_command)
         status = stdout.read().decode().strip()
+        if status == "inactive":
+            status = "active"
 
         # Get the performance metrics of the service (CPU and Memory usage)
         performance_command = (

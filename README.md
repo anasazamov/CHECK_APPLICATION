@@ -1,6 +1,6 @@
 # CHECK_APPLICATION
 
-# Django Project Setup Guide
+## Django Project Setup Guide
 
 This project is built using **Django** and utilizes **Celery**, **Celery Worker**, and **Celery Beat** for task management. The database used is **PostgreSQL**, and environment variables are managed using `.env` files. Follow the steps below to set up and run the project successfully.
 
@@ -54,6 +54,7 @@ DB_PWD=your_db_password
 DB_HOST=localhost
 DB_PORT=5432
 SECRET_KEY=your_django_secret_key
+TELEGRAM_BOT_TOKEN=telegram_bot_token
 ```
 Replace your_db_name, your_db_user, your_db_password, and your_django_secret_key with your actual values.
 ## Apply Database Migrations

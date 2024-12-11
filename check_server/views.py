@@ -7,6 +7,8 @@ from .models import Server, Application, Company, Domain, DockerApplication
 from .tasks import manitor_server, check_domain_ssl, check_docker_app
 from .get_log import check_service_status, get_logs_and_performance_by_port
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from .send_telegram_notifacation import get_chat_info
 from .check_functions import (
     is_server_alive,
     is_port_open,
@@ -25,6 +27,7 @@ from django.conf import settings
 # Create your views here.
 
 
+@csrf_exempt
 def user_login(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
@@ -56,20 +59,43 @@ def index(request):
 
     host_name = request.get_host()
     settings.DOMAIN = host_name
-    name = request.GET.get("name", "")
-    user = request.user
-    company = Company.objects.filter(user=user)
 
-    servers = Server.objects.filter(company__in=company, name__contains=name).values(
+    name = request.GET.get("name", "")
+    chat_id = request.GET.get("chanel_id", "")
+    company_id = request.GET.get("company_id", "")
+
+    user = request.user
+    companies = Company.objects.filter(user=user)
+
+    if chat_id:
+        company = get_object_or_404(Company, id=company_id)
+        company.chanel_id = chat_id
+        company.save()
+
+    telegram_chanel_info = []
+
+    for company in companies:
+
+        chanel_info = get_chat_info(company.chanel_id)
+        chanel_info["company_id"] = company.pk
+        chanel_info["chat_id"] = company.chanel_id
+        telegram_chanel_info.append(chanel_info)
+
+    servers = Server.objects.filter(company__in=companies, name__contains=name).values(
         "id", "name", "ipv4"
     )
     for server in servers:
         is_active = is_server_alive(server["ipv4"])
         server["is_active"] = is_active
 
-    return render(request, "index.html", {"servers": servers, "name": name})
+    return render(
+        request,
+        "index.html",
+        {"servers": servers, "name": name, "chanels": telegram_chanel_info},
+    )
 
 
+@csrf_exempt
 @login_required
 def add_server(request):
     if request.method == "POST":
@@ -118,7 +144,7 @@ def applications(request, server_id):
         app["is_active"] = is_active
 
     domains = Domain.objects.filter(server=server, domain__contains=name).values(
-        "domain"
+        "domain", "id"
     )
 
     docker_apps = (
@@ -149,8 +175,8 @@ def applications(request, server_id):
         "performance": performance,
         "docker_apps": docker_apps,
     }
-
-    ssh.close()
+    if ssh:
+        ssh.close()
 
     return render(
         request,
@@ -159,6 +185,7 @@ def applications(request, server_id):
     )
 
 
+@csrf_exempt
 @login_required
 def add_apps(request):
     if request.method == "POST":
@@ -182,13 +209,13 @@ def add_apps(request):
     return render(request, "app.html", {"form": form})
 
 
+@csrf_exempt
 @login_required
 def add_domain(request):
     if request.method == "POST":
 
         data = request.POST
         form = DomainForm(data)
-        print(data)
         if form.is_valid():
             form.save()
 
@@ -208,13 +235,13 @@ def add_domain(request):
     return render(request, "apps.html", {"form": form})
 
 
+@csrf_exempt
 @login_required
 def add_docker(request):
     if request.method == "POST":
 
         data = request.POST
         form = DockerApplicationForm(data)
-        print(data)
         if form.is_valid():
             form.save()
 
@@ -247,7 +274,10 @@ def app_info(request, app_id):
     )
     logs = check_service_status(ssh, app.name_run_on_server)
     logs["service"] = app.name_run_on_server.title()
-    ssh.close()
+
+    if ssh:
+        ssh.close()
+
     return render(request, "log.html", logs)
 
 

@@ -173,7 +173,7 @@ class DockerApplicationAdminView(admin.ModelAdmin):
             obj.server.password,
             obj.server.ssh_port,
         )
-        is_active = is_inner_port(ssh, obj.port)
+        is_active = is_docker_port_active(ssh, obj.port)
         ssh.close()
         return is_active
 
